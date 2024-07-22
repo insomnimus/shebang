@@ -54,7 +54,7 @@ fn run() -> Result<i32, Box<dyn std::error::Error>> {
 		// check if we should replace the interpreter
 		let mut c = match env::var("SHEBANG_BIN") {
 			Ok(bin) if !bin.is_empty() => {
-				let bin = bin.trim_end_matches(|c| c == '\\' || c == '/');
+				let bin = bin.trim_end_matches(['\\', '/']);
 				BINS.iter()
 					.find_map(|path| {
 						first.strip_prefix(path).map(|cmd| {
