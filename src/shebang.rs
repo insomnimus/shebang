@@ -52,21 +52,21 @@ fn run() -> Result<i32, Box<dyn std::error::Error>> {
 		let first = words.next().unwrap();
 
 		// check if we should replace the interpreter
-		let mut c = match env::var("SHEBANG_BIN") {
-			Ok(bin) if !bin.is_empty() => {
+		let mut c = env::var("SHEBANG_BIN")
+			.ok()
+			.filter(|s| !s.is_empty())
+			.and_then(|bin| {
 				let bin = bin.trim_end_matches(['\\', '/']);
-				BINS.iter()
-					.find_map(|path| {
-						first.strip_prefix(path).map(|cmd| {
-							let mut bin = PathBuf::from(bin);
-							bin.push(cmd);
-							Command::new(bin)
-						})
+				BINS.iter().find_map(|path| {
+					first.strip_prefix(path).map(|cmd| {
+						let mut bin = PathBuf::from(bin);
+						bin.push(cmd);
+						Command::new(bin)
 					})
-					.unwrap_or_else(|| Command::new(first))
-			}
-			_ => Command::new(first),
-		};
+				})
+			})
+			.unwrap_or_else(|| Command::new(first));
+
 		c.args(words);
 		c
 	} else {
