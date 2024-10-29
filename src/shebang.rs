@@ -83,6 +83,8 @@ fn run() -> Result<i32, Box<dyn std::error::Error>> {
 		c
 	};
 
+	// println!("{}", format!("{c:?}").replace("\\\\", "/"));
+
 	Ok(c.arg(&file).args(args).status()?.code().unwrap_or(0))
 }
 

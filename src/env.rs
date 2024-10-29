@@ -57,7 +57,7 @@ fn run() -> io::Result<i32> {
 					rest = true;
 					args.push(a);
 				}
-				Some((k, v)) => env::set_var(k, v),
+				Some((k, v)) => unsafe { env::set_var(k, v) },
 			},
 		}
 	}
